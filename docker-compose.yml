@@ -1,0 +1,92 @@
+services:
+  # 1. PostgreSQL Database Service
+  postgres:
+    image: postgres:15-alpine
+    container_name: meetflow-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: meetflowsecretpassword
+      POSTGRES_DB: meetflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Exposing the port locally isn't strictly required for inter-container communication,
+    # but we map it so you can inspect the DB directly if needed.
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Redis Key-Value Store Service (for BullMQ)
+  redis:
+    image: redis:7-alpine
+    container_name: meetflow-redis
+    restart: always
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 3. Next.js Web App Service
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meetflow-web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:meetflowsecretpassword@postgres:5432/meetflow?schema=public
+      - REDIS_URL=redis://redis:6379
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+      - GOOGLE_CALENDAR_REDIRECT_URI=${GOOGLE_CALENDAR_REDIRECT_URI}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - TOKEN_ENCRYPTION_KEY=${TOKEN_ENCRYPTION_KEY}
+      - APP_BASE_URL=${APP_BASE_URL}
+      - NODE_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # 4. Background Queue Worker Service
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: meetflow-worker
+    restart: always
+    # Run the worker process inside the container
+    command: ["npm", "run", "worker"]
+    environment:
+      - DATABASE_URL=postgresql://postgres:meetflowsecretpassword@postgres:5432/meetflow?schema=public
+      - REDIS_URL=redis://redis:6379
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+      - GOOGLE_CALENDAR_REDIRECT_URI=${GOOGLE_CALENDAR_REDIRECT_URI}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - TOKEN_ENCRYPTION_KEY=${TOKEN_ENCRYPTION_KEY}
+      - APP_BASE_URL=${APP_BASE_URL}
+      - NODE_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:

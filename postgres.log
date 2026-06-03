@@ -1,0 +1,11 @@
+2026-06-03 22:40:40.295 IST [50921] LOG:  starting PostgreSQL 14.19 (Homebrew) on aarch64-apple-darwin24.4.0, compiled by Apple clang version 17.0.0 (clang-1700.0.13.3), 64-bit
+2026-06-03 22:40:40.296 IST [50921] LOG:  listening on IPv6 address "::1", port 5435
+2026-06-03 22:40:40.296 IST [50921] LOG:  listening on IPv4 address "127.0.0.1", port 5435
+2026-06-03 22:40:40.296 IST [50921] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5435"
+2026-06-03 22:40:40.299 IST [50925] LOG:  database system was shut down at 2026-06-03 22:40:40 IST
+2026-06-03 22:40:40.302 IST [50921] LOG:  database system is ready to accept connections
+2026-06-03 22:40:41.324 IST [50933] FATAL:  role "jk" does not exist
+2026-06-03 22:43:42.897 IST [52792] FATAL:  database "meetflow" does not exist
+2026-06-03 22:43:42.899 IST [52793] FATAL:  database "meetflow" does not exist
+2026-06-03 22:43:42.916 IST [52795] FATAL:  database "meetflow" does not exist
+2026-06-03 22:43:42.918 IST [52796] FATAL:  database "meetflow" does not exist

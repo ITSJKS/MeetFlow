@@ -1,0 +1,38 @@
+name: Deploy MeetFlow to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # 1. Navigate to the project folder
+            cd ~/meetflow
+
+            # 2. Pull the latest code changes from GitHub
+            git pull origin main
+
+            # 3. Build and restart the Docker containers
+            # The NODE_OPTIONS heap limit will automatically be applied from the Dockerfile
+            docker compose up --build -d
+
+            # 4. Push any new database schema migrations
+            docker compose exec -T web npx prisma db push
+
+            # 5. Clean up unused Docker images to save disk space
+            docker image prune -f

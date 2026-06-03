@@ -1,0 +1,100 @@
+// schema.prisma
+// Defines the database structure for MeetFlow.
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id             String                   @id @default(uuid()) @db.Uuid
+  name           String?
+  email          String                   @unique
+  imageUrl       String?                  @map("image_url")
+  createdAt      DateTime                 @default(now()) @map("created_at")
+  updatedAt      DateTime                 @updatedAt @map("updated_at")
+  googleAccounts ConnectedGoogleAccount[]
+  schedulingJobs SchedulingJob[]
+
+  @@map("users")
+}
+
+model ConnectedGoogleAccount {
+  id                    String          @id @default(uuid()) @db.Uuid
+  userId                String          @db.Uuid @map("user_id")
+  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  googleEmail           String          @map("google_email")
+  calendarId            String          @default("primary") @map("calendar_id")
+  accessTokenEncrypted  String          @map("access_token_encrypted")
+  refreshTokenEncrypted String          @map("refresh_token_encrypted")
+  tokenExpiry           DateTime        @map("token_expiry")
+  scopes                String[]
+  isActive              Boolean         @default(true) @map("is_active")
+  createdAt             DateTime        @default(now()) @map("created_at")
+  updatedAt             DateTime        @updatedAt @map("updated_at")
+  schedulingJobs        SchedulingJob[]
+
+  @@map("connected_google_accounts")
+}
+
+model SchedulingJob {
+  id              String                 @id @default(uuid()) @db.Uuid
+  userId          String                 @db.Uuid @map("user_id")
+  user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  googleAccountId String                 @db.Uuid @map("google_account_id")
+  googleAccount   ConnectedGoogleAccount @relation(fields: [googleAccountId], references: [id], onDelete: Cascade)
+  name            String
+  sourceType      String                 @default("csv") @map("source_type")
+  status          String                 // "draft", "queued", "running", "completed", "completed_with_errors", "failed"
+  totalRows       Int                    @default(0) @map("total_rows")
+  validRows       Int                    @default(0) @map("valid_rows")
+  scheduledRows   Int                    @default(0) @map("scheduled_rows")
+  failedRows      Int                    @default(0) @map("failed_rows")
+  startedAt       DateTime?              @map("started_at")
+  completedAt     DateTime?              @map("completed_at")
+  createdAt       DateTime               @default(now()) @map("created_at")
+  updatedAt       DateTime               @updatedAt @map("updated_at")
+  rows            SchedulingJobRow[]
+
+  @@map("scheduling_jobs")
+}
+
+model SchedulingJobRow {
+  id                     String        @id @default(uuid()) @db.Uuid
+  jobId                  String        @db.Uuid @map("job_id")
+  job                    SchedulingJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  rowNumber              Int           @map("row_number")
+
+  candidateEmail         String        @map("candidate_email")
+  interviewerEmail       String        @map("interviewer_email")
+  ccEmails               String[]      @map("cc_emails")
+
+  title                  String
+  description            String?
+  timezone               String        @default("Asia/Kolkata")
+  startTime              DateTime      @map("start_time")
+  endTime                DateTime      @map("end_time")
+
+  status                 String        // "pending", "validation_failed", "queued", "processing", "scheduled", "failed", "cancelled"
+  validationError        String?       @map("validation_error")
+  errorMessage           String?       @map("error_message")
+
+  googleCalendarEventId  String?       @map("google_calendar_event_id")
+  googleCalendarHtmlLink String?       @map("google_calendar_html_link")
+  googleMeetLink         String?       @map("google_meet_link")
+
+  externalId             String?       @map("external_id")
+  idempotencyKey         String        @unique @map("idempotency_key")
+
+  attemptCount           Int           @default(0) @map("attempt_count")
+  lastAttemptAt          DateTime?     @map("last_attempt_at")
+
+  createdAt              DateTime      @default(now()) @map("created_at")
+  updatedAt              DateTime      @updatedAt @map("updated_at")
+
+  @@map("scheduling_job_rows")
+}
