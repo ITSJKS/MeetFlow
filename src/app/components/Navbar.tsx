@@ -126,7 +126,7 @@ export default function Navbar() {
               style={{
                 width: '120px',
                 height: '24px',
-                background: 'rgba(255,255,255,0.05)',
+                background: 'var(--muted-dark)',
                 borderRadius: '4px',
               }}
             ></div>

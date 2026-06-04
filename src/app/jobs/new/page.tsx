@@ -565,19 +565,19 @@ Generate the downloadable CSV file:`;
                   <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '20px' }}>Review Parsed Schedule</h2>
                   
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--card-border)' }}>
+                    <div style={{ background: 'var(--muted-dark)', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--card-border)' }}>
                       <div style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>Job Name</div>
                       <div style={{ fontSize: '1.1rem', fontWeight: 700, marginTop: '4px' }}>{jobName}</div>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--card-border)' }}>
+                    <div style={{ background: 'var(--muted-dark)', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--card-border)' }}>
                       <div style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>Total Rows</div>
                       <div style={{ fontSize: '1.1rem', fontWeight: 700, marginTop: '4px' }}>{uploadedJob.total_rows}</div>
                     </div>
-                    <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--success-border)', color: 'var(--success)' }}>
+                    <div style={{ background: 'rgba(5, 150, 105, 0.05)', padding: '16px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--success-border)', color: 'var(--success)' }}>
                       <div style={{ fontSize: '0.8rem', color: 'var(--success)', opacity: 0.8 }}>Ready to Schedule</div>
                       <div style={{ fontSize: '1.1rem', fontWeight: 700, marginTop: '4px' }}>{uploadedJob.valid_rows} rows</div>
                     </div>
-                    <div style={{ background: uploadedJob.failed_rows > 0 ? 'rgba(244, 63, 94, 0.05)' : 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: 'var(--radius-sm)', border: uploadedJob.failed_rows > 0 ? '1px solid var(--danger-border)' : '1px solid var(--card-border)', color: uploadedJob.failed_rows > 0 ? 'var(--danger)' : 'inherit' }}>
+                    <div style={{ background: uploadedJob.failed_rows > 0 ? 'rgba(225, 29, 72, 0.05)' : 'var(--muted-dark)', padding: '16px', borderRadius: 'var(--radius-sm)', border: uploadedJob.failed_rows > 0 ? '1px solid var(--danger-border)' : '1px solid var(--card-border)', color: uploadedJob.failed_rows > 0 ? 'var(--danger)' : 'inherit' }}>
                       <div style={{ fontSize: '0.8rem', color: uploadedJob.failed_rows > 0 ? 'var(--danger)' : 'var(--muted)', opacity: 0.8 }}>Validation Errors</div>
                       <div style={{ fontSize: '1.1rem', fontWeight: 700, marginTop: '4px' }}>{uploadedJob.failed_rows} rows</div>
                     </div>
@@ -715,7 +715,7 @@ Generate the downloadable CSV file:`;
             </h2>
 
             {/* Global Settings Block */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', padding: '20px', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-sm)', marginBottom: '32px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', padding: '20px', background: 'var(--muted-dark)', border: '1px solid var(--card-border)', borderRadius: 'var(--radius-sm)', marginBottom: '32px' }}>
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Job Container Name</label>
                 <input
@@ -755,7 +755,7 @@ Generate the downloadable CSV file:`;
                   style={{
                     position: 'relative',
                     padding: '24px 20px',
-                    background: 'rgba(255,255,255,0.02)',
+                    background: 'var(--muted-dark)',
                     border: '1px solid var(--card-border)',
                     borderRadius: 'var(--radius-md)',
                   }}
